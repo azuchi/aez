@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{AEZ implementation for ruby.}
   spec.description   = %q{AEZ implementation for ruby.}
-  spec.homepage      = "https://github.com/azuchi/aez"
+  spec.homepage      = "https://github.com/chaintope/aez"
   spec.license       = "MIT"
 
   # Specify which files should be added to the gem when it is released.
