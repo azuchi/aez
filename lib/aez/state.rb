@@ -94,6 +94,30 @@ module AEZ
       sum
     end
 
+    def aez_prf(delta, tau, block)
+      buf, ctr = [mk_block, mk_block]
+      off = 0
+      while tau >= AEZ::BLOCK_SIZE
+        buf = xor_bytes_1x16(delta, ctr)
+        buf = aes.AES10(l[3], buf)
+        block[off, buf.length] = buf
+        i = 15
+        loop do
+          ctr[i] = (ctr[i].bti + 1).to_even_hex.htb
+          i -= 1
+          break unless ctr[i+1].bti == 0
+        end
+        tau -= AEZ::BLOCK_SIZE
+        off += AEZ::BLOCK_SIZE
+      end
+
+      if tau > 0
+        buf = xor_bytes_1x16(delta, ctr)
+        buf = aes.AES10(l[3], buf)
+        block[off..block.length] = buf[0...(block.length - off)]
+      end
+      block
+    end
   end
 
 end

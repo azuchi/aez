@@ -282,10 +282,12 @@ module AEZ
       @aes4_key[0, 4] = keys[4...8]
       @aes4_key[4, 4] = keys[0...4]
       @aes4_key[8, 4] = keys[8...12]
-    end
 
-    def reset
-
+      @aes10_key = [].fill(0, 0, 40)
+      @aes10_key[0, 12] = keys
+      @aes10_key[12, 24] = keys
+      @aes10_key[24, 36] = keys
+      @aes10_key[36, 40] = keys[0...4]
     end
 
     def AES4(j, i, l, src)
@@ -293,8 +295,9 @@ module AEZ
       rounds(dst, 4)
     end
 
-    def AES10
-
+    def AES10(l, src)
+      dst = xor_bytes_1x16(src, l)
+      rounds(dst, 10)
     end
 
     def rounds(block, rounds)
