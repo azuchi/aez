@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "aez"
+require 'json'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -11,4 +12,9 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+end
+
+def fixture_file(relative_path)
+  file = File.read(File.join(File.dirname(__FILE__), 'fixtures', relative_path))
+  JSON.parse(file)
 end
