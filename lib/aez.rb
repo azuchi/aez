@@ -1,4 +1,5 @@
 require "aez/version"
+require 'blake2b'
 
 module AEZ
 

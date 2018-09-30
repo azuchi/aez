@@ -3,6 +3,7 @@ module AEZ
 
     def extract_key(key)
       return key if key && key.size == AEZ::EXTRACTED_KEY_SIZE
+      Blake2b.hex(key, Blake2b::Key.none, AEZ::EXTRACTED_KEY_SIZE).htb
     end
 
     def mk_block(size = AEZ::BLOCK_SIZE)
