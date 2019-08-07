@@ -9,6 +9,7 @@ RSpec.describe AEZ do
     let(:hash_vector) {fixture_file('hash.json')}
     let(:prf_vector) {fixture_file('prf.json')}
     let(:extract_vector) {fixture_file('extract.json')}
+    let(:encrypt_vector) {fixture_file('encrypt.json')}
 
     describe 'aezHash' do
       it 'should be calculate aezHash.' do
@@ -36,6 +37,16 @@ RSpec.describe AEZ do
       it 'should be calculate extractKey' do
         extract_vector.each do |v|
           expect(extract_key(v['key'].htb).bth).to eq(v['result'])
+        end
+      end
+    end
+
+    describe 'encrypt' do
+      it 'should be encrypt' do
+        encrypt_vector.each do |v|
+          ad = v['ad'].map(&:htb)
+          encrypted = AEZ.encrypt(v['key'].htb, v['nonce'].htb, ad, v['tau'], v['message'].htb)
+          expect(encrypted.bth).to eq(v['result'])
         end
       end
     end
