@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['shigeyuki azuchi']
   spec.email         = ['azuchi@chaintope.com']
 
-  spec.summary       = %q{AEZ implementation for ruby.}
-  spec.description   = %q{AEZ implementation for ruby.}
+  spec.summary       = 'AEZ binding for ruby.'
+  spec.description   = 'AEZ binding for ruby.'
   spec.homepage      = 'https://github.com/chaintope/aez'
   spec.license       = 'MIT'
 
@@ -22,9 +22,12 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
-  spec.add_runtime_dependency 'blake2b'
+  spec.extensions = ['ext/aezv5/extconf.rb']
+  spec.add_runtime_dependency 'ffi', '>= 1.15.1'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake', '>= 12.3.3'
+  spec.add_development_dependency 'rake-compiler', '>= 1.1.1'
   spec.add_development_dependency 'rspec', '~> 3.0'
+
 end

@@ -6,4 +6,4 @@ $CFLAGS << ' -march=native'
 $CPPFLAGS << ' -march=native'
 
 # Create Makefile
-create_makefile('aezv5/aezv5')
+create_makefile('aezv5')
