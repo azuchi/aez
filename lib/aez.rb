@@ -22,7 +22,7 @@ module AEZ
       "#{lib_name}.so"
     end
 
-  ffi_lib File.expand_path("aez/#{file_name}", __dir__)
+  ffi_lib File.expand_path(file_name, __dir__)
 
   attach_function :aez_setup, [:pointer, :ulong_long, :pointer], :int
   attach_function :aez_encrypt, [:pointer, :pointer, :uint, :pointer, :uint, :uint, :pointer, :uint, :pointer], :int
