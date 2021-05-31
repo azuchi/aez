@@ -1,68 +1,45 @@
-require "aez/version"
-require 'blake2b'
+# frozen_string_literal: true
 
+require 'aez/version'
+require 'ffi'
+
+# AEZv5 ruby binding.
+# [AEZv5](https://web.cs.ucdavis.edu/~rogaway/aez)
 module AEZ
 
-  BLOCK_SIZE = 16
-  EXTRACTED_KEY_SIZE = 3 * 16
+  class Error; end
 
-  autoload :Functions, 'aez/functions'
-  autoload :State, 'aez/state'
-  autoload :AESRound, 'aez/aes_round'
+  extend FFI::Library
 
-  extend Functions
+  ffi_lib 'lib/aez/aezv5.so'
+
+  attach_function :crypto_aead_encrypt, [:pointer, :pointer, :pointer, :ulong_long, :pointer, :ulong_long, :pointer, :pointer, :pointer], :int
+  attach_function :crypto_aead_decrypt, [:pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer, :pointer], :int
+  attach_function :aez_setup, [:pointer, :ulong_long, :pointer], :int
+  attach_function :aez_encrypt, [:pointer, :pointer, :uint, :pointer, :uint, :uint, :pointer, :uint, :pointer], :int
 
   module_function
 
-  # @param [String] key a key with binary format.
-  # @param [String] nonce a nonce with binary format.
-  # @param [String] additional_data
-  # @param [Integer] tau
-  # @param [String] plain_text plain text with binary format which are encrypt target.
-  def encrypt(key, nonce, additional_data, tau, plain_text)
-    additional_data ||= ''
-    state = AEZ::State.new
-    state.init(key)
-    delta = state.aez_hash(nonce, additional_data, tau * 8)
-    x = mk_block(plain_text.length + tau)
-    if !plain_text || plain_text.length == 0
-      x = state.aez_prf(delta, tau, x)
-    else
-      x[0, plain_text.length] = plain_text
-      x = state.encipher(delta, x, x)
-    end
-    x
+  # @param [String] key key with binary format.
+  # @param [String] message message with binary format.
+  # @param [String] ad ad with binary format.
+  # @param [String] nonce nonce with binary format.
+  def encrypt(key, message, ad, nonce, abyte)
+    ctx = FFI::MemoryPointer.new(144)
+    key_m = FFI::MemoryPointer.new(:uchar, key.bytesize).put_bytes(0, key)
+    aez_setup(key_m, key.bytesize, ctx)
+
+    message_m = message.empty? ? nil : FFI::MemoryPointer.new(:uchar, message.bytesize).put_bytes(0, message)
+    ad_m = ad.empty? ? nil : FFI::MemoryPointer.new(:char, ad.bytesize).put_bytes(0, ad)
+    nonce_m = FFI::MemoryPointer.new(:char, nonce.bytesize).put_bytes(0, nonce)
+    dest = FFI::MemoryPointer.new(:char, message.bytesize + abyte)
+
+    aez_encrypt(ctx, nonce_m, nonce.bytesize, ad_m, ad.bytesize, abyte, message_m, message.bytesize, dest)
+    dest.read_string(message.bytesize + abyte)
   end
 
-  class ::String
-    # convert hex to binary
-    def htb
-      [self].pack('H*')
-    end
+  def decrypt
 
-    # convert binary to hex
-    def bth
-      unpack('H*').first
-    end
-
-    def bti
-      bth.to_i(16)
-    end
-  end
-
-  class ::Integer
-    def to_even_hex(byte_len = nil)
-      hex = to_s(16)
-      if byte_len
-        hex.rjust(byte_len * 2, '0')
-      else
-        hex.rjust((hex.length / 2.0).ceil * 2, '0')
-      end
-    end
-
-    def itb
-      to_even_hex.htb
-    end
   end
 
 end

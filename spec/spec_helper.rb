@@ -18,3 +18,15 @@ def fixture_file(relative_path)
   file = File.read(File.join(File.dirname(__FILE__), 'fixtures', relative_path))
   JSON.parse(file)
 end
+
+class String
+
+  def htb
+    [self].pack('H*')
+  end
+
+  def bth
+    unpack1('H*')
+  end
+
+end
