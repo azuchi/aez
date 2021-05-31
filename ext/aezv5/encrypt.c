@@ -35,7 +35,6 @@
  // For more information, please refer to <http://unlicense.org/>
  */
 
-#include "crypto_aead.h"
 #include <stdint.h>
 #include <stddef.h>
 
