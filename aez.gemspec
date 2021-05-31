@@ -6,12 +6,12 @@ require 'aez/version'
 Gem::Specification.new do |spec|
   spec.name          = 'aez'
   spec.version       = AEZ::VERSION
-  spec.authors       = ['shigeyuki azuchi']
+  spec.authors       = ['Shigeyuki Azuchi']
   spec.email         = ['azuchi@chaintope.com']
 
   spec.summary       = 'AEZ binding for ruby.'
   spec.description   = 'AEZ binding for ruby.'
-  spec.homepage      = 'https://github.com/chaintope/aez'
+  spec.homepage      = 'https://github.com/azuchi/aez'
   spec.license       = 'MIT'
 
   # Specify which files should be added to the gem when it is released.

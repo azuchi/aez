@@ -1,8 +1,17 @@
-# Aez
+# AEZ for Ruby [![Build Status](https://github.com/azuchi/aez/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/azuchi/aez/actions/workflows/ruby.yml) [![Gem Version](https://badge.fury.io/rb/aez.svg)](https://badge.fury.io/rb/aez) [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/aez`. To experiment with that code, run `bin/console` for an interactive prompt.
+[AEZ](http://web.cs.ucdavis.edu/~rogaway/aez/) binding for ruby.
+This library calls AEZv5 implementation in C using AES-NI hardware optimizations via FFI.
 
-TODO: Delete this and the text above, and describe your gem
+## Requirements
+
+There are the following limitations from Ted Krovetz's C implementation:
+
+- Intel or ARM CPU supporting AES instructions
+- Faster if all pointers are 16-byte aligned.
+- Max 16 byte nonce, 16 byte authenticator
+- Single AD (AEZ spec allows vector AD but this code doesn't)
+- Max 2^32-1 byte buffers allowed (due to using unsigned int)
 
 ## Installation
 
@@ -22,22 +31,18 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'aez'
 
-## Development
+key = ['9adf7a023fbc4e663695f627a8d5b5c45f6752e375d19e11a669e6b949347d0cf5e0e2516ee285af365224976afa60be'].pack('H*')
+nonce = ['799de3d90fbd6fed93b5f96cf9f4e852'].pack('H*')
+ad = ['d6e278e0c6ede09d302d6fde09de77711a9a02fc8a049fb34a5e3f00c1cfc336d0'].pack('H*')
+message = ['efea7ecfa45f51b52ce038cf6c0704392c2211bfca17a36284f63a902b37f0ab'].pack('H*')
+abyte = 16
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+# Encryption
+cipher_tex = AEZ.encrypt(key, message, ad, nonce, abyte)
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/aez. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Aez project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/aez/blob/master/CODE_OF_CONDUCT.md).
+# Decryption
+plain_text = AEZ.decrypt(key, message, ad, nonce, abyte)
+```
