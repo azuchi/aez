@@ -12,17 +12,19 @@ RSpec.describe AEZ do
 
     it 'should be encrypt and decrypt' do
       encrypt_vector.each do |v|
-        # ad = v['ad'].map(&:htb).join
         next if v['data'].length > 1 # skipped due to lack of vector-AAD support in the C implementation
-        data = v['data'].map(&:htb).join
 
-        # encrypted = AEZ.encrypt(v['key'].htb, v['message'].htb, ad, v['nonce'].htb, abyte)
-        encrypted = AEZ.encrypt(v['k'].htb, v['m'].htb, data, v['nonce'].htb, v['tau'])
-        # puts "#{encrypted.bth} =? #{v['result']}"
-        puts "#{encrypted.bth} =? #{v['c']}"
-        # expect(encrypted.bth).to eq(v['result'])
+        key = v['k'].htb
+        message = v['m'].htb
+        ad = v['data'].map(&:htb).join
+        nonce = v['nonce'].htb
+        encrypted = AEZ.encrypt(key, message, ad, nonce, v['tau'])
+
         expect(encrypted.bth).to eq(v['c'])
         expect(encrypted.bytesize).to eq(v['c'].htb.bytesize)
+
+        decrypted = AEZ.decrypt(key, encrypted, ad, nonce, v['tau'])
+        expect(decrypted).to eq(message)
       end
     end
 
