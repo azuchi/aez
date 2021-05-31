@@ -13,6 +13,8 @@ There are the following limitations from Ted Krovetz's C implementation:
 - Single AD (AEZ spec allows vector AD but this code doesn't)
 - Max 2^32-1 byte buffers allowed (due to using unsigned int)
 
+Note: This code has not been formally audited. Use at your own risk.
+
 ## Installation
 
 Add this line to your application's Gemfile:
