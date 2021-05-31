@@ -44,5 +44,5 @@ abyte = 16
 cipher_tex = AEZ.encrypt(key, message, ad, nonce, abyte)
 
 # Decryption
-plain_text = AEZ.decrypt(key, message, ad, nonce, abyte)
+plain_text = AEZ.decrypt(key, cipher_tex, ad, nonce, abyte)
 ```
