@@ -5,4 +5,4 @@ require 'mkmf'
 $CFLAGS << ' -march=native'
 
 # Create Makefile
-create_makefile('aezv5')
+create_makefile('aez/aezv5')

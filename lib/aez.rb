@@ -13,16 +13,7 @@ module AEZ
 
   extend FFI::Library
 
-  lib_name = 'aezv5'
-  file_name =
-    case RbConfig::CONFIG['host_os'].downcase
-    when /darwin|mac os/
-      "#{lib_name}.dylib"
-    when /linux/
-      "#{lib_name}.so"
-    end
-
-  ffi_lib File.expand_path(file_name, __dir__)
+  ffi_lib File.expand_path("aez/aezv5.#{FFI::Platform::LIBSUFFIX}", __dir__)
 
   attach_function :aez_setup, [:pointer, :ulong_long, :pointer], :int
   attach_function :aez_encrypt, [:pointer, :pointer, :uint, :pointer, :uint, :uint, :pointer, :uint, :pointer], :int
