@@ -13,7 +13,16 @@ module AEZ
 
   extend FFI::Library
 
-  ffi_lib File.expand_path("aez/aezv5.#{FFI::Platform::LIBSUFFIX}", __dir__)
+  suffix = case RbConfig::CONFIG['host_os'].downcase
+           when /darwin/
+             'bundle'
+           when /windows|cygwin|msys|mingw|mswin/
+             'dll'
+           else
+             'so'
+           end
+
+  ffi_lib File.expand_path("aez/aezv5.#{suffix}", __dir__)
 
   attach_function :aez_setup, [:pointer, :ulong_long, :pointer], :int
   attach_function :aez_encrypt, [:pointer, :pointer, :uint, :pointer, :uint, :uint, :pointer, :uint, :pointer], :int
