@@ -7,7 +7,7 @@ require 'ffi'
 # [AEZv5](https://web.cs.ucdavis.edu/~rogaway/aez)
 module AEZ
 
-  class Error; end
+  class Error < StandardError; end
 
   MAX_CIPHER_TXT_LENGTH = 2**32 - 1
 
